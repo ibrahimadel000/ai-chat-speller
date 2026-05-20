@@ -12,12 +12,12 @@ scriptPath = projectDir & "\spell_overlay.py"
 If Not fso.FileExists(pythonw) Then
     MsgBox "Python environment was not found:" & vbCrLf & pythonw & vbCrLf & vbCrLf & _
            "Open the project once in Codex/terminal and install requirements first.", _
-           vbExclamation, "AI Chat Spell Assistant"
+           vbExclamation, "AI Agent Chat Spell Assistant"
     WScript.Quit 1
 End If
 
 If Not fso.FileExists(scriptPath) Then
-    MsgBox "Could not find spell_overlay.py in:" & vbCrLf & projectDir, vbExclamation, "AI Chat Spell Assistant"
+    MsgBox "Could not find spell_overlay.py in:" & vbCrLf & projectDir, vbExclamation, "AI Agent Chat Spell Assistant"
     WScript.Quit 1
 End If
 

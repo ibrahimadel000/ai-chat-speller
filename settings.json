@@ -1,13 +1,36 @@
 {
   "hotkey_scan": "<ctrl>+<alt>+s",
-  "hotkey_clipboard_scan": "<ctrl>+<alt>+<shift>+s",
   "hotkey_diagnostics": "<ctrl>+<alt>+d",
   "hotkey_pause": "<ctrl>+<alt>+p",
   "hotkey_hide": "<esc>",
-  "clipboard_copy_delay_seconds": 0.05,
-  "clipboard_focus_delay_seconds": 0.08,
-  "clipboard_paste_delay_seconds": 0.04,
-  "clipboard_wait_timeout_seconds": 0.8,
+  "clipboard_copy_delay_seconds": 0.12,
+  "clipboard_focus_delay_seconds": 0.15,
+  "clipboard_paste_delay_seconds": 0.08,
+  "clipboard_wait_timeout_seconds": 1.2,
   "startup_message": true,
-  "extra_known_words": []
+  "extra_known_words": [],
+  "target_keywords": [
+    "antigravity",
+    "codex",
+    "ai agent",
+    "agent mode",
+    "ask ai",
+    "ask codex",
+    "codex chat",
+    "antigravity chat",
+    "agent chat"
+  ],
+  "dedicated_ai_process_names": [
+    "antigravity.exe",
+    "codex.exe"
+  ],
+  "trusted_window_title_keywords": [
+    "README.md - spell checker - Visual Studio Code"
+  ],
+  "trusted_process_paths": [
+    "E:\\Microsoft VS Code\\Code.exe",
+    "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "C:\\Users\\USER\\AppData\\Local\\Programs\\Python\\Python313\\pythonw.exe"
+  ],
+  "max_chat_input_chars": 12000
 }

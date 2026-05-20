@@ -7,11 +7,11 @@ Set shell = CreateObject("WScript.Shell")
 
 projectDir = fso.GetParentFolderName(WScript.ScriptFullName)
 desktopDir = shell.SpecialFolders("Desktop")
-shortcutPath = desktopDir & "\AI Chat Spell Assistant.lnk"
-launcherPath = projectDir & "\Start AI Chat Spell Assistant.vbs"
+shortcutPath = desktopDir & "\AI Agent Chat Spell Assistant.lnk"
+launcherPath = projectDir & "\Start AI Agent Chat Spell Assistant.vbs"
 
 If Not fso.FileExists(launcherPath) Then
-    MsgBox "Could not find:" & vbCrLf & launcherPath, vbExclamation, "AI Chat Spell Assistant"
+    MsgBox "Could not find:" & vbCrLf & launcherPath, vbExclamation, "AI Agent Chat Spell Assistant"
     WScript.Quit 1
 End If
 
@@ -20,7 +20,7 @@ shortcut.TargetPath = "wscript.exe"
 shortcut.Arguments = """" & launcherPath & """"
 shortcut.WorkingDirectory = projectDir
 shortcut.IconLocation = "shell32.dll,46"
-shortcut.Description = "Start AI Chat Spell Assistant"
+shortcut.Description = "Start AI Agent Chat Spell Assistant"
 shortcut.Save
 
-MsgBox "Created desktop shortcut:" & vbCrLf & shortcutPath, vbInformation, "AI Chat Spell Assistant"
+MsgBox "Created desktop shortcut:" & vbCrLf & shortcutPath, vbInformation, "AI Agent Chat Spell Assistant"

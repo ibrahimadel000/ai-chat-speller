@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env/
+.venv/
+build/
+dist/
+*.log
+@AutomationLog.txt
+user_words.txt
+fix.py

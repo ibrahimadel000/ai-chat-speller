@@ -14,8 +14,8 @@ py -m PyInstaller `
     --clean `
     --onefile `
     --windowed `
-    --name SpellOverlay `
-    --collect-data spellchecker `
+    --name AIAgentChatSpellAssistant `
+    --collect-data symspellpy `
     spell_overlay.py
 
-Write-Host "Built dist\SpellOverlay.exe"
+Write-Host "Built dist\AIAgentChatSpellAssistant.exe"

@@ -1,5 +1,5 @@
 uiautomation>=2.0.20
-pyspellchecker>=0.8.1
+symspellpy
 pynput>=1.7.6
 pyperclip>=1.8.2
 pystray>=0.19.5
