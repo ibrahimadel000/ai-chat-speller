@@ -1,8 +1,8 @@
-# AI Chat Spell Assistant
+# Windows Spell Overlay MVP
 
-A lightweight Windows utility for checking spelling only inside AI agent chat inputs, such as Codex, Antigravity, ChatGPT, and similar assistant chat boxes.
+A small Python prototype for checking text in the currently focused Windows input control. It uses Windows UI Automation for text extraction, `pyspellchecker` for offline spelling suggestions, and a tiny Tkinter overlay for corrections.
 
-The app is intentionally not a general OS spell checker. Before scanning, it checks whether the active window or focused control looks like a configured AI chat target. If not, it refuses to scan and does not touch the clipboard.
+This is now aimed at Electron chat/editor workflows first: UI Automation is still available, but the clipboard fallback is the important path for VS Code, Codex-style chats, and Antigravity-style custom editors.
 
 ## Setup
 
@@ -13,38 +13,29 @@ pip install -r requirements.txt
 python spell_overlay.py
 ```
 
-## Double-Click Launch
-
-Use these files from File Explorer:
-
-- `Start AI Chat Spell Assistant.vbs` starts the utility silently with no command window.
-- `Open Project Folder.vbs` opens this folder.
-- `Open Project in VS Code.vbs` opens the folder in VS Code if the `code` command is installed.
-- `Create Desktop Shortcut.vbs` creates an `AI Chat Spell Assistant` shortcut on your desktop.
-
 ## Build an EXE
 
 ```powershell
 .\build.ps1
 ```
 
-The executable is written to `dist\AIChatSpellAssistant.exe`. The build uses PyInstaller and collects `pyspellchecker` dictionary data.
+The executable is written to `dist\SpellOverlay.exe`. The build uses PyInstaller and collects `pyspellchecker` dictionary data.
 
 ## Usage
 
 1. Start the app.
-2. Click inside the AI agent chat input you want to check.
-3. Press `Ctrl+Alt+S` to scan the focused AI chat input. This is clipboard-first because AI chat apps are usually Electron/custom editors.
-4. Press `Ctrl+Alt+Shift+S` to force the AI chat clipboard scan.
+2. Click into a text box in another app, such as VS Code, an Electron chat view, or a browser text area.
+3. Press `Ctrl+Alt+S` for the normal Windows UI Automation scan.
+4. Press `Ctrl+Alt+Shift+S` if the normal scan cannot see text in an Electron or Monaco editor.
 5. Press `Ctrl+Alt+D` to show focused-control diagnostics.
 6. Press `Ctrl+Alt+P` to pause/resume scans while keeping the utility open.
 7. Click a suggested correction in the overlay, or use `Ignore` / `Add word` for false positives.
 
-The app also adds a system tray icon with AI chat scan, diagnostics, pause/resume, hide, and exit actions.
+The app also adds a system tray icon with scan, diagnostics, pause/resume, hide, and exit actions.
 
-If the focused AI chat input supports direct accessibility replacement, the app can use that. For Electron chat inputs, it normally uses `Ctrl+A`, `Ctrl+C`, and later `Ctrl+A`, `Ctrl+V` inside the focused AI chat input.
+If the focused control exposes a writable UI Automation value pattern, the MVP replaces the misspelled word in the whole field. If the target app does not allow writing through accessibility, the selected suggestion is copied to the clipboard instead.
 
-If the active app does not match an AI chat target, the app shows `AI chat target not detected` and does nothing.
+The clipboard fallback deliberately sends `Ctrl+A`, `Ctrl+C`, and later `Ctrl+A`, `Ctrl+V` when applying a correction. This makes it useful for Electron editors that hide text from UI Automation, but it also means it rewrites the active field with the corrected full text. Use it only after clicking inside the input you want to check.
 
 Press `Esc` to hide the overlay.
 
@@ -56,15 +47,13 @@ On first run, the app creates:
 - `spell_overlay.log` for scan results and focused-control diagnostics.
 - `user_words.txt` after the first `Add word` action.
 
-Use `target_keywords` and `dedicated_ai_process_names` in `settings.json` to control which AI chat surfaces are allowed. If a new chat app is blocked, press `Ctrl+Alt+D`, look at the window title/process/focused name, then add a narrow keyword such as `codex`, `antigravity`, or the exact app name.
-
-If the clipboard fallback does not work smoothly in a specific AI chat app, slightly increase the clipboard timing values.
+If the clipboard fallback does not work smoothly in a specific app, open `settings.json` and slightly increase the clipboard timing values.
 
 ## Notes and Limits
 
 - This is intentionally local and offline after dependencies are installed.
-- The app only scans configured AI chat targets.
-- Electron apps vary in what they expose through Windows accessibility APIs. AI chat editors often need the clipboard path.
+- Electron apps vary in what they expose through Windows accessibility APIs. Some chat editors expose text cleanly; some custom editors expose only partial text or no writable pattern.
+- VS Code's Monaco editor often does not behave like a normal Windows text box. Use `Ctrl+Alt+Shift+S` for the clipboard fallback.
 - The clipboard fallback restores text clipboard content, but Windows clipboard formats such as images or rich text may be replaced by plain text during the scan.
 - `Add word` stores lowercase entries in `user_words.txt` next to the script and loads them on startup.
 - `pynput` global hotkeys may need the script to run in the same privilege level as the target application. If the target app is elevated, run this utility elevated too.

@@ -9,23 +9,5 @@
   "clipboard_paste_delay_seconds": 0.04,
   "clipboard_wait_timeout_seconds": 0.8,
   "startup_message": true,
-  "extra_known_words": [],
-  "target_keywords": [
-    "antigravity",
-    "chatgpt",
-    "codex",
-    "openai",
-    "ai chat",
-    "ai agent",
-    "ask ai",
-    "ask codex",
-    "agent chat"
-  ],
-  "dedicated_ai_process_names": [
-    "antigravity.exe",
-    "chatgpt.exe",
-    "codex.exe"
-  ],
-  "clipboard_first_for_ai_chat": true,
-  "max_chat_input_chars": 12000
+  "extra_known_words": []
 }

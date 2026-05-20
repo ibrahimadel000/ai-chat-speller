@@ -1,0 +1,17 @@
+2026-05-21 01:14:45,160 INFO Spell Overlay started
+2026-05-21 01:15:19,185 INFO Starting UI Automation scan
+2026-05-21 01:15:19,189 INFO Could not import comtypes.gen._944DE083_8FB8_45CF_BCB7_C477ACB2F897_0_1_0: No module named 'comtypes.gen._944DE083_8FB8_45CF_BCB7_C477ACB2F897_0_1_0'
+2026-05-21 01:15:19,204 INFO # Generating comtypes.gen._944DE083_8FB8_45CF_BCB7_C477ACB2F897_0_1_0
+2026-05-21 01:15:19,246 INFO # Generating comtypes.gen.UIAutomationClient
+2026-05-21 01:15:19,250 INFO Could not import comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0: No module named 'comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0'
+2026-05-21 01:15:19,251 INFO # Generating comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0
+2026-05-21 01:15:19,257 INFO # Generating comtypes.gen.stdole
+2026-05-21 01:15:22,817 INFO Starting UI Automation scan
+2026-05-21 01:15:34,722 INFO Starting UI Automation scan
+2026-05-21 01:15:34,732 INFO Scan read 99 chars by UI Automation TextPattern and found 0 misspellings
+2026-05-21 01:15:37,287 INFO Starting UI Automation scan
+2026-05-21 01:15:38,474 INFO Starting UI Automation scan
+2026-05-21 01:15:42,288 INFO Starting UI Automation scan
+2026-05-21 01:15:42,291 INFO Scan read 99 chars by UI Automation TextPattern and found 0 misspellings
+2026-05-21 01:15:43,341 INFO Starting UI Automation scan
+2026-05-21 01:15:43,347 INFO Scan read 99 chars by UI Automation TextPattern and found 0 misspellings
