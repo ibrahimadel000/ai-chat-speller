@@ -147,7 +147,7 @@ class AccessibilityReader:
             f"Class: {_safe_call('', lambda: control.ClassName) or '(unknown)'}",
             f"AutomationId: {_safe_call('', lambda: control.AutomationId) or '(empty)'}",
             f"ProcessId: {_safe_call('', lambda: control.ProcessId) or '(unknown)'}",
-            f"ValuePattern: {'yes' if _safe_call(None, control.GetValuePattern) else 'no'}",
-            f"TextPattern: {'yes' if _safe_call(None, control.GetTextPattern) else 'no'}",
+            f"ValuePattern: {'yes' if _safe_call(None, getattr, control, 'GetValuePattern', None) else 'no'}",
+            f"TextPattern: {'yes' if _safe_call(None, getattr, control, 'GetTextPattern', None) else 'no'}",
         ]
         return "\n".join(lines)

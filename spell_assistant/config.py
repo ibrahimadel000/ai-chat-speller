@@ -11,7 +11,7 @@ SETTINGS_FILE = APP_DIR / "settings.json"
 LOG_FILE = APP_DIR / "spell_overlay.log"
 USER_WORDS_FILE = APP_DIR / "user_words.txt"
 
-HOTKEY_SCAN = "<ctrl>+<alt>+s"
+HOTKEY_SCAN = "<alt>+q"
 HOTKEY_DIAGNOSTICS = "<ctrl>+<alt>+d"
 HOTKEY_PAUSE = "<ctrl>+<alt>+p"
 HOTKEY_HIDE = "<esc>"

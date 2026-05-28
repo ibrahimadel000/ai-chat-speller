@@ -7,7 +7,7 @@ from typing import Callable
 class TextSnapshot:
     text: str
     source_name: str
-    setter: Callable[[str, int, int, int], bool] | None
+    setter: Callable[[str, Misspelling, str], bool] | None
     extraction_method: str
     replace_note: str | None = None
 
@@ -19,6 +19,7 @@ class Misspelling:
     suggestions: list[str]
     context_before: str
     context_after: str
+    bounds: tuple[int, int, int, int] | None = None
 
 @dataclass
 class ActiveWindowInfo:
