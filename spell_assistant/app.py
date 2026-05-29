@@ -25,7 +25,7 @@ class AIAgentChatSpellAssistantApp:
         self.selection_editor = SelectionEditor(self.config)
         self.engine = SpellEngine(extra_known_words=self.config.extra_known_words)
         
-        self.main_window = MainWindow(self._editor_apply, self._editor_copy)
+        self.main_window = MainWindow(self._editor_apply, self._editor_copy, self._editor_add_word, self.engine.find_misspellings)
         self.tray = TrayController(self)
         
         self.listener: NativeHotKeyListener | None = None
@@ -100,6 +100,11 @@ class AIAgentChatSpellAssistantApp:
     def _editor_copy(self, final_text: str) -> None:
         pyperclip.copy(final_text)
         logging.info("Copied corrected text to clipboard")
+
+    def _editor_add_word(self, word: str) -> None:
+        normalized = self.engine.add_word(word)
+        if normalized:
+            logging.info("Added word to dictionary: %s", normalized)
 
     def _start_hotkeys(self) -> None:
         self.listener = NativeHotKeyListener(

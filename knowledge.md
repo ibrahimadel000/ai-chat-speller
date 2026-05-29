@@ -23,7 +23,7 @@ Single-file app using Python stdlib + these libraries:
 - **pyperclip** — clipboard read/write
 - **pystray + Pillow** — system tray icon
 - **uiautomation** — Windows UI Automation (focused control detection)
-- **pyspellchecker** — offline spell checker
+- **symspellpy** — offline spell checker
 - **ctypes** — native Windows hotkey API (alternative to pynput hooks)
 
 ## Key behaviors

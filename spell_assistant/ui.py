@@ -21,12 +21,15 @@ class MainWindow(tk.Tk):
     BAD = "#ff5c7a"
     BORDER = "#2c2c2c"
 
-    def __init__(self, on_apply: Callable[[str, int], None], on_copy: Callable[[str], None]) -> None:
+    def __init__(self, on_apply: Callable[[str, int], None], on_copy: Callable[[str], None], on_add_word: Callable[[str], None], on_text_changed: Callable[[str], list[Misspelling]]) -> None:
         super().__init__()
         self.on_apply = on_apply
         self.on_copy = on_copy
+        self.on_add_word = on_add_word
+        self.on_text_changed = on_text_changed
         self.current_misspellings: list[Misspelling] = []
         self.raw_text: str = ""
+        self._recheck_after_id: str | None = None
         
         self.title("Spell Checker")
         self.geometry("450x150")
@@ -60,7 +63,8 @@ class MainWindow(tk.Tk):
         )
         self.text_widget.pack(fill="both", expand=True)
         self.text_widget.tag_configure("typo", foreground=self.BAD, underline=True)
-        self.text_widget.bind("<Button-1>", self._on_text_click)
+        self.text_widget.bind("<Button-3>", self._on_text_click)
+        self.text_widget.bind("<KeyRelease>", self._on_key_release)
 
         footer = tk.Frame(self.container, bg=self.BG)
         footer.pack(fill="x", pady=(4, 0))
@@ -127,11 +131,39 @@ class MainWindow(tk.Tk):
             for sugg in misspelling.suggestions:
                 def make_cmd(s=sugg, t=typo_idx, tn=tag_name):
                     return lambda: self._apply_suggestion_to_editor(s, t, tn)
-                self.menu.add_command(label=s, command=make_cmd())
+                self.menu.add_command(label=sugg, command=make_cmd())
                 
         self.menu.add_separator()
         self.menu.add_command(label="Ignore", command=lambda tn=tag_name: self._ignore_typo(tn))
+        self.menu.add_command(label="Add to dictionary", command=lambda w=misspelling.word, tn=tag_name: self._add_word(w, tn))
         self.menu.tk_popup(x, y)
+
+    def _add_word(self, word: str, tag_name: str) -> None:
+        self.on_add_word(word)
+        self._ignore_typo(tag_name)
+
+    def _on_key_release(self, event: tk.Event) -> None:
+        if self._recheck_after_id:
+            self.after_cancel(self._recheck_after_id)
+        current_text = self.text_widget.get("1.0", "end-1c")
+        self._recheck_after_id = self.after(300, lambda: self._recheck_text(current_text))
+
+    def _recheck_text(self, text: str) -> None:
+        misspellings = self.on_text_changed(text)
+        self.current_misspellings = misspellings
+        
+        # Remove all existing tags
+        for tag in self.text_widget.tag_names():
+            if tag == "typo" or tag.startswith("typo_"):
+                self.text_widget.tag_remove(tag, "1.0", "end")
+                
+        # Re-apply tags
+        for i, m in enumerate(misspellings):
+            start_idx = self.text_widget.index(f"1.0 + {m.start} chars")
+            end_idx = self.text_widget.index(f"1.0 + {m.end} chars")
+            tag_name = f"typo_{i}"
+            self.text_widget.tag_add("typo", start_idx, end_idx)
+            self.text_widget.tag_add(tag_name, start_idx, end_idx)
 
     def _apply_suggestion_to_editor(self, suggestion: str, typo_idx: int, tag_name: str) -> None:
         ranges = self.text_widget.tag_ranges(tag_name)
@@ -151,6 +183,7 @@ class MainWindow(tk.Tk):
         self.text_widget.insert(start, suggestion)
         
         self.on_apply(suggestion, typo_idx)
+        self._recheck_text(self.text_widget.get("1.0", "end-1c"))
         
     def _ignore_typo(self, tag_name: str) -> None:
         ranges = self.text_widget.tag_ranges(tag_name)

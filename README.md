@@ -57,5 +57,5 @@ For a new AI agent chat app, press `Ctrl+Alt+D` while focused in the chat input 
 - The assistant uses clipboard shortcuts because AI agent chats are usually Electron/custom editors.
 - The detector skips code-ish text such as URLs, inline code, file paths, acronyms, camelCase identifiers, and words with numbers.
 - The clipboard text content is restored after scanning, but rich clipboard formats may become plain text.
-- The dictionary is offline via `pyspellchecker`.
+- The dictionary is offline via `symspellpy`.
 - `Add word` stores lowercase entries in `user_words.txt`.
