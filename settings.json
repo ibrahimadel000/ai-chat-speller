@@ -8,7 +8,9 @@
   "clipboard_paste_delay_seconds": 0.08,
   "clipboard_wait_timeout_seconds": 1.2,
   "startup_message": true,
-  "extra_known_words": [],
+  "extra_known_words": [
+    "adel"
+  ],
   "target_keywords": [
     "antigravity",
     "codex",

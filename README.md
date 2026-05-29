@@ -1,61 +1,77 @@
-# AI Agent Chat Spell Assistant
+# AI Agent Chat Spell Assistant 🪄
 
-A lightweight Windows utility that checks spelling only inside AI agent chat inputs, such as Codex chat and Antigravity agent chat.
+**The missing spell-checker for AI coding assistants and CLI tools.**
 
-This is not a general spell checker. It refuses to scan ordinary apps, browsers, editors, and random text boxes unless the active focused area matches the configured AI agent chat target rules.
+Have you ever noticed that powerful AI coding agents (like Antigravity, Codex, Cursor, and various AI CLI tools) often lack native spell-checking in their chat input boxes? You end up sending prompts with typos, which can confuse the AI or just feel frustrating to read.
 
-## Double-Click Launch
+This lightweight Windows utility solves exactly that. It provides a targeted, smart spell-checker that **only activates inside your configured AI agent chats and CLI tools**, completely ignoring your regular browsers, IDEs, and system menus so it never gets in your way.
 
-Use these files from File Explorer:
+## ✨ Features
 
-- `Start AI Agent Chat Spell Assistant.vbs` starts the utility silently with no command window.
-- `Create Desktop Shortcut.vbs` creates an `AI Agent Chat Spell Assistant` shortcut on your desktop.
-- `Open Project Folder.vbs` opens this folder.
-- `Open Project in VS Code.vbs` opens the project folder in VS Code if the `code` command is installed.
+- **Hyper-Targeted:** Refuses to scan ordinary apps. It only activates when your focused window or control matches AI chat keywords (e.g., `codex`, `antigravity`, `ai agent`).
+- **Smart Code Filtering:** Built for developers. Automatically ignores URLs, email addresses, file paths, `camelCaseVariables`, inline code, fenced code blocks, and ALL_CAPS constants.
+- **Real-Time Corrections:** Provides a sleek popup editor with real-time red underlines for typos.
+- **Right-Click Dictionary:** Right-click any typo to see suggestions, ignore it, or add it to your personal offline dictionary.
+- **Offline & Private:** Uses the blazing-fast `symspellpy` dictionary locally. Your prompts are never sent to the cloud.
+- **System Tray Integration:** Runs quietly in the background.
 
-## Usage
+---
 
-1. Start the app.
-2. Click inside the Codex or Antigravity agent chat input.
-3. Press `Ctrl+Alt+S`.
-4. The overlay highlights the wrong word in context.
-5. Pick a correction, or use `Ignore` / `Add word`.
+## 🚀 Installation & Usage
 
-Other hotkeys:
+Since AI tools are often custom Electron apps or CLI interfaces, this assistant uses a smart UI Automation and Clipboard approach to read and replace your text seamlessly.
 
-- `Ctrl+Alt+D` shows AI agent chat target diagnostics.
-- `Ctrl+Alt+P` pauses/resumes the assistant.
-- `Esc` hides the overlay.
-- `Enter` applies the first suggestion while the overlay is focused.
-- `1` through `5` apply a numbered suggestion.
+### Quick Start
 
-If `Ctrl+Alt+S` does not fire, the startup overlay will report a hotkey registration problem. That usually means another app already owns the shortcut. Change `hotkey_scan` in `settings.json`, or use the tray menu action `Scan AI agent chat`.
+If you just want to run the pre-configured environment, simply double-click the included VBS scripts:
+- **`Start AI Agent Chat Spell Assistant.vbs`** - Starts the utility silently in the background.
+- **`Create Desktop Shortcut.vbs`** - Creates a handy shortcut on your desktop.
 
-If you double-click the launcher and nothing seems to happen, check the tray. The assistant runs as one background instance; double-clicking again will show a message instead of starting a second copy.
+### Building from Source
 
-## How It Stays AI-Agent-Only
+If you want to build the standalone `.exe` yourself:
+1. Ensure you have Python installed.
+2. Run the build script:
+   ```powershell
+   .\build.ps1
+   ```
+3. The executable will be generated in `dist\AIAgentChatSpellAssistant.exe`.
 
-Before it scans, the app checks the foreground window and focused accessibility context for configured AI-agent-chat keywords such as `codex`, `antigravity`, `ai agent`, `ask codex`, and `agent chat`.
+---
 
-If the focused area does not match, it shows `AI agent chat target not detected` and does not copy, scan, or replace anything.
+## ⌨️ How to Use It
 
-If the blocked window is actually Codex or Antigravity agent chat, click `Trust this AI agent window` in the overlay. The app stores that exact window/process in `settings.json`.
+1. Start the app (it will appear in your system tray).
+2. Click inside your favorite AI agent chat input or AI CLI tool.
+3. Press **`Alt + Q`** (Default scan hotkey).
+4. The overlay instantly appears, highlighting any misspelled words.
+5. **Right-click** a red-underlined word to pick a correction, or select **Add to dictionary** to remember it forever.
+6. Click **Copy Text** (or press Enter) to instantly copy the corrected text back to your clipboard and close the overlay.
 
-## Settings
+### Hotkeys
 
-`settings.json` controls the allowed AI agent chat targets:
+- **`Alt + Q`**: Scan the current AI agent chat input.
+- **`Esc`**: Hide the overlay without copying.
 
-- `target_keywords` controls accepted window/control/context words.
-- `dedicated_ai_process_names` controls accepted dedicated app process names.
-- `trusted_window_title_keywords` and `trusted_process_paths` are filled when you trust a blocked AI-agent window.
-- `max_chat_input_chars` prevents accidentally scanning a large editor/document.
+*(Hotkeys can be customized in `settings.json`)*
 
-For a new AI agent chat app, press `Ctrl+Alt+D` while focused in the chat input and add a narrow keyword from the diagnostics to `target_keywords`.
+---
 
-## Notes
+## ⚙️ Adding New AI Tools
 
-- The assistant uses clipboard shortcuts because AI agent chats are usually Electron/custom editors.
-- The detector skips code-ish text such as URLs, inline code, file paths, acronyms, camelCase identifiers, and words with numbers.
-- The clipboard text content is restored after scanning, but rich clipboard formats may become plain text.
-- The dictionary is offline via `symspellpy`.
-- `Add word` stores lowercase entries in `user_words.txt`.
+By default, the assistant looks for keywords like `antigravity`, `codex`, and `agent chat`. 
+
+**What if your AI CLI or Chat isn't recognized?**
+1. Open `settings.json`.
+2. Add a unique keyword representing your AI tool's window title into the `"target_keywords"` list, or add its `.exe` to `"dedicated_ai_process_names"`.
+3. Restart the app.
+
+---
+
+## 📝 Notes & Limitations
+
+- **Windows Only:** Relies heavily on native Windows UI Automation and `ctypes` hotkeys.
+- **Clipboard Usage:** Scans by doing a rapid select-all/copy/restore sequence. Rich text formatting might be converted to plain text during correction.
+- **Dictionary:** Custom words added via the right-click menu are saved in `user_words.txt`.
+uring correction.
+- **Dictionary:** Custom words added via the right-click menu are saved in `user_words.txt`.
