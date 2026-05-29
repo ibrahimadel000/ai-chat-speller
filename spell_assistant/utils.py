@@ -24,6 +24,15 @@ def _safe_call(default, fn, *args):
     except Exception:
         return default
 
+import sys
+import os
+
+def get_asset_path(filename: str) -> str:
+    """Get the absolute path to an asset, handling PyInstaller's _MEIPASS."""
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, 'assets', filename)
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', filename)
+
 def configure_logging() -> None:
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)

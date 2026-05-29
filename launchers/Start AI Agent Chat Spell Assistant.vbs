@@ -5,7 +5,7 @@ Dim fso, shell, projectDir, pythonw, scriptPath
 Set fso = CreateObject("Scripting.FileSystemObject")
 Set shell = CreateObject("WScript.Shell")
 
-projectDir = fso.GetParentFolderName(WScript.ScriptFullName)
+projectDir = fso.GetParentFolderName(fso.GetParentFolderName(WScript.ScriptFullName))
 pythonw = projectDir & "\.venv\Scripts\pythonw.exe"
 scriptPath = projectDir & "\spell_overlay.py"
 

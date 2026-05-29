@@ -15,6 +15,8 @@ py -m PyInstaller `
     --onefile `
     --windowed `
     --name AIAgentChatSpellAssistant `
+    --icon "assets\app_icon.ico" `
+    --add-data "assets;assets" `
     --collect-data symspellpy `
     spell_overlay.py
 

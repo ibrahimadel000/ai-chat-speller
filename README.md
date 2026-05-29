@@ -23,7 +23,7 @@ Since AI tools are often custom Electron apps or CLI interfaces, this assistant 
 
 ### Quick Start
 
-If you just want to run the pre-configured environment, simply double-click the included VBS scripts:
+If you just want to run the pre-configured environment, simply double-click the included VBS scripts in the **`launchers`** folder:
 - **`Start AI Agent Chat Spell Assistant.vbs`** - Starts the utility silently in the background.
 - **`Create Desktop Shortcut.vbs`** - Creates a handy shortcut on your desktop.
 

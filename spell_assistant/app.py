@@ -31,6 +31,7 @@ class AIAgentChatSpellAssistantApp:
         self.listener: NativeHotKeyListener | None = None
         self.closing = False
         self.ui_queue: queue.Queue[Callable[[], None]] = queue.Queue()
+        self.current_snapshot: TextSnapshot | None = None
 
     def run(self) -> None:
         self._start_hotkeys()
@@ -46,6 +47,35 @@ class AIAgentChatSpellAssistantApp:
     def scan_selected_text(self) -> None:
         logging.info("Hotkey pressed. Queuing check selection.")
         self._run_on_ui(lambda: self.main_window.after(100, self._check_selection))
+        
+    def quick_fix_selected_text(self) -> None:
+        logging.info("Quick fix hotkey pressed. Applying top suggestions instantly.")
+        self._run_on_ui(lambda: self._quick_fix_process())
+
+    def _quick_fix_process(self) -> None:
+        snapshot = self.selection_editor.read_selected_text()
+        if snapshot is None or not snapshot.text.strip():
+            return
+            
+        misspellings = self.engine.find_misspellings(snapshot.text)
+        if not misspellings:
+            return
+            
+        # Apply top suggestion to all misspellings starting from the end to preserve indices
+        text = snapshot.text
+        for m in reversed(misspellings):
+            if m.suggestions:
+                suggestion = m.suggestions[0]
+                original = text[m.start:m.end]
+                if original.isupper():
+                    suggestion = suggestion.upper()
+                elif original[:1].isupper():
+                    suggestion = suggestion.capitalize()
+                text = text[:m.start] + suggestion + text[m.end:]
+                
+        if snapshot.setter:
+            snapshot.setter(text, None, None)
+            logging.info("Quick fix applied instantly.")
 
     def _check_selection(self) -> None:
         logging.info("Checking selected text via clipboard")
@@ -56,6 +86,7 @@ class AIAgentChatSpellAssistantApp:
             self.main_window.show_text("No text selected. Highlight text and press Alt+Q.", [])
             return
 
+        self.current_snapshot = snapshot
         misspellings = self.engine.find_misspellings(snapshot.text)
         logging.info(
             "Scan read %s chars and found %s misspellings",
@@ -100,6 +131,11 @@ class AIAgentChatSpellAssistantApp:
     def _editor_copy(self, final_text: str) -> None:
         pyperclip.copy(final_text)
         logging.info("Copied corrected text to clipboard")
+        
+        # Auto-paste feature!
+        if self.current_snapshot and self.current_snapshot.setter:
+            self.current_snapshot.setter(final_text, None, None)
+            logging.info("Auto-pasted corrected text back to target application")
 
     def _editor_add_word(self, word: str) -> None:
         normalized = self.engine.add_word(word)
@@ -110,6 +146,7 @@ class AIAgentChatSpellAssistantApp:
         self.listener = NativeHotKeyListener(
             {
                 self.config.hotkey_scan: self.scan_selected_text,
+                self.config.hotkey_quick_fix: self.quick_fix_selected_text,
                 self.config.hotkey_diagnostics: lambda: None, # diagnostics removed for simplicity
                 self.config.hotkey_pause: lambda: None, # pause removed for simplicity
             }

@@ -12,6 +12,7 @@ LOG_FILE = APP_DIR / "spell_overlay.log"
 USER_WORDS_FILE = APP_DIR / "user_words.txt"
 
 HOTKEY_SCAN = "<alt>+q"
+HOTKEY_QUICK_FIX = "<alt>+w"
 HOTKEY_DIAGNOSTICS = "<ctrl>+<alt>+d"
 HOTKEY_PAUSE = "<ctrl>+<alt>+p"
 HOTKEY_HIDE = "<esc>"
@@ -24,6 +25,22 @@ DEFAULT_KNOWN_WORDS = {
     "api", "chatgpt", "codex", "electron", "github",
     "javascript", "json", "monaco", "npm", "openai",
     "powershell", "python", "typescript", "uiautomation", "vscode",
+    "args", "kwargs", "config", "utils", "repo", "init", "dev", "devops",
+    "linux", "localhost", "url", "html", "css", "auth", "sudo", "gui",
+    "tcp", "udp", "dns", "sql", "backend", "frontend", "ui", "db",
+    "yaml", "toml", "dll", "exe", "venv", "src", "lib", "pwd", "cwd",
+    "cmd", "os", "env", "dotenv", "docker", "kubernetes", "nginx",
+    "apache", "ssl", "tls", "ssh", "rsa", "aes", "md5", "sha", "utf",
+    "ascii", "regex", "sdk", "cli", "uuid", "guid", "bool", "int", "str",
+    "dict", "dicts", "tuples", "tuple", "func", "req", "params", "res",
+    "postgres", "sqlite", "mysql", "mongo", "redis", "aws", "gcp", "azure",
+    "ip", "http", "https", "wss", "ws", "graphql", "grpc", "rest", "restful",
+    "apis", "rpc", "ux", "oauth", "jwt", "cors", "xss", "csrf", "nosql",
+    "xml", "csv", "md", "svg", "png", "jpg", "jpeg", "gif", "mp3", "mp4",
+    "wav", "flac", "avi", "mkv", "webm", "rar", "zip", "tar", "gz", "bz",
+    "xz", "7z", "pkg", "deb", "rpm", "apk", "msi", "dmg", "iso", "img",
+    "bin", "cue", "raw", "vmdk", "vdi", "vhd", "qcow", "ova", "ovf",
+    "boolean", "integer", "string", "character", "char", "float", "double",
 }
 
 DEFAULT_TARGET_KEYWORDS = [
@@ -38,6 +55,7 @@ DEFAULT_DEDICATED_AI_PROCESSES = [
 @dataclass
 class AppConfig:
     hotkey_scan: str = HOTKEY_SCAN
+    hotkey_quick_fix: str = HOTKEY_QUICK_FIX
     hotkey_diagnostics: str = HOTKEY_DIAGNOSTICS
     hotkey_pause: str = HOTKEY_PAUSE
     hotkey_hide: str = HOTKEY_HIDE
@@ -79,6 +97,7 @@ class AppConfig:
     def to_json(self) -> dict[str, object]:
         return {
             "hotkey_scan": self.hotkey_scan,
+            "hotkey_quick_fix": self.hotkey_quick_fix,
             "hotkey_diagnostics": self.hotkey_diagnostics,
             "hotkey_pause": self.hotkey_pause,
             "hotkey_hide": self.hotkey_hide,

@@ -45,7 +45,7 @@ class MainWindow(tk.Tk):
         # A little header
         header = tk.Frame(self.container, bg=self.BG)
         header.pack(fill="x", pady=(0, 4))
-        tk.Label(header, text="Copied Text (Fix typos and copy)", bg=self.BG, fg="#a8b0bd", font=("Segoe UI", 9)).pack(side="left")
+        tk.Label(header, text="Review & Apply Fixes", bg=self.BG, fg="#a8b0bd", font=("Segoe UI", 9)).pack(side="left")
 
         self.text_widget = tk.Text(
             self.container,
@@ -70,7 +70,7 @@ class MainWindow(tk.Tk):
         footer.pack(fill="x", pady=(4, 0))
 
         tk.Button(
-            footer, text="Copy Text", command=self._copy_and_close,
+            footer, text="Apply & Close", command=self._copy_and_close,
             bg=self.ACCENT, fg="#ffffff", activebackground="#6fa2ff", activeforeground="#ffffff",
             relief="flat", bd=0, padx=12, pady=4, font=("Segoe UI", 9, "bold"), cursor="hand2"
         ).pack(side="right")
@@ -121,6 +121,13 @@ class MainWindow(tk.Tk):
                 misspelling = self.current_misspellings[typo_idx]
                 self._show_suggestions(event.x_root, event.y_root, misspelling, typo_idx, tag)
                 return
+
+        # If we clicked on normal text, show a standard context menu
+        self.menu.delete(0, "end")
+        self.menu.add_command(label="Copy", command=lambda: self.text_widget.event_generate("<<Copy>>"))
+        self.menu.add_command(label="Paste", command=lambda: self.text_widget.event_generate("<<Paste>>"))
+        self.menu.add_command(label="Select All", command=lambda: self.text_widget.tag_add("sel", "1.0", "end"))
+        self.menu.tk_popup(event.x_root, event.y_root)
 
     def _show_suggestions(self, x: int, y: int, misspelling: Misspelling, typo_idx: int, tag_name: str) -> None:
         self.menu.delete(0, "end")
@@ -194,10 +201,7 @@ class MainWindow(tk.Tk):
     def _copy_and_close(self) -> None:
         final_text = self.text_widget.get("1.0", "end-1c")
         self.on_copy(final_text)
-        # Keep window open or hide it? User said "small text box, which i see it in the background".
-        # So maybe don't even close it. Just give visual feedback.
-        self.title("Copied!")
-        self.after(1000, lambda: self.title("Spell Checker"))
+        self.hide()
 
 class TrayController:
     def __init__(self, app: "AIAgentChatSpellAssistantApp") -> None:
@@ -226,9 +230,13 @@ class TrayController:
 
     @staticmethod
     def _create_icon_image() -> Image.Image:
-        image = Image.new("RGBA", (64, 64), (32, 33, 36, 255))
-        draw = ImageDraw.Draw(image)
-        draw.rounded_rectangle((8, 8, 56, 56), radius=10, fill=(66, 133, 244, 255))
-        draw.text((17, 15), "AI", fill=(255, 255, 255, 255))
-        draw.line((20, 46, 44, 46), fill=(255, 255, 255, 255), width=4)
-        return image
+        try:
+            return Image.open(get_asset_path("app_icon.ico"))
+        except Exception as e:
+            logging.warning("Could not load tray icon: %s", e)
+            image = Image.new("RGBA", (64, 64), (32, 33, 36, 255))
+            draw = ImageDraw.Draw(image)
+            draw.rounded_rectangle((8, 8, 56, 56), radius=10, fill=(66, 133, 244, 255))
+            draw.text((17, 15), "AI", fill=(255, 255, 255, 255))
+            draw.line((20, 46, 44, 46), fill=(255, 255, 255, 255), width=4)
+            return image
