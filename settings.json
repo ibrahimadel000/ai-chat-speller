@@ -1,5 +1,6 @@
 {
   "hotkey_scan": "<alt>+q",
+  "hotkey_quick_fix": "<alt>+w",
   "hotkey_diagnostics": "<ctrl>+<alt>+d",
   "hotkey_pause": "<ctrl>+<alt>+p",
   "hotkey_hide": "<esc>",

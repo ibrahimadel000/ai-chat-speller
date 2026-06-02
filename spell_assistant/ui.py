@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw
 
 from spell_assistant.config import APP_TITLE, AppConfig
 from spell_assistant.models import Misspelling
+from spell_assistant.utils import get_asset_path
 
 if TYPE_CHECKING:
     from spell_assistant.app import AIAgentChatSpellAssistantApp
@@ -34,6 +35,10 @@ class MainWindow(tk.Tk):
         self.title("Spell Checker")
         self.geometry("450x150")
         self.attributes("-topmost", True)
+        try:
+            self.iconbitmap(get_asset_path("app_icon.ico"))
+        except Exception as e:
+            logging.warning("Could not load window icon: %s", e)
         self.configure(bg=self.BORDER)
         
         # We don't want it to close completely if they hit X, just maybe hide? Or they can close it and Alt+Q brings it back.

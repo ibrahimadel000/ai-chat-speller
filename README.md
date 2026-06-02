@@ -8,34 +8,34 @@ This lightweight Windows utility solves exactly that. It provides a targeted, sm
 
 ## ✨ Features
 
-- **Hyper-Targeted:** Refuses to scan ordinary apps. It only activates when your focused window or control matches AI chat keywords (e.g., `codex`, `antigravity`, `ai agent`).
+- **Hyper-Targeted:** Refuses to scan ordinary apps. It only activates when your focused window or control matches your AI chat keywords (e.g., `codex`, `antigravity`, `ai agent`).
 - **Smart Code Filtering:** Built for developers. Automatically ignores URLs, email addresses, file paths, `camelCaseVariables`, inline code, fenced code blocks, and ALL_CAPS constants.
 - **Real-Time Corrections:** Provides a sleek popup editor with real-time red underlines for typos.
 - **Right-Click Dictionary:** Right-click any typo to see suggestions, ignore it, or add it to your personal offline dictionary.
-- **Offline & Private:** Uses the blazing-fast `symspellpy` dictionary locally. Your prompts are never sent to the cloud.
-- **System Tray Integration:** Runs quietly in the background.
+- **Lightning Fast & Private:** Uses the blazing-fast `symspellpy` dictionary locally. Your prompts are never sent to the cloud.
+- **System Tray Integration:** Runs quietly in the background without cluttering your taskbar.
 
 ---
 
 ## 🚀 Installation & Usage
 
-Since AI tools are often custom Electron apps or CLI interfaces, this assistant uses a smart UI Automation and Clipboard approach to read and replace your text seamlessly.
+Because AI tools are often custom Electron apps or terminal interfaces without native spell-check APIs, this assistant uses a smart UI Automation and clipboard approach to seamlessly read and replace your text.
 
 ### Quick Start
 
-If you just want to run the pre-configured environment, simply double-click the included VBS scripts in the **`launchers`** folder:
+If you just want to run the pre-configured environment, use the included VBS scripts in the **`launchers`** folder:
 - **`Start AI Agent Chat Spell Assistant.vbs`** - Starts the utility silently in the background.
 - **`Create Desktop Shortcut.vbs`** - Creates a handy shortcut on your desktop.
 
 ### Building from Source
 
-If you want to build the standalone `.exe` yourself:
-1. Ensure you have Python installed.
+To build the standalone `.exe` yourself:
+1. Ensure you have Python installed (Windows only).
 2. Run the build script:
    ```powershell
    .\build.ps1
    ```
-3. The executable will be generated in `dist\AIAgentChatSpellAssistant.exe`.
+3. The executable will be generated at `dist\AIAgentChatSpellAssistant.exe`.
 
 ---
 
@@ -46,14 +46,15 @@ If you want to build the standalone `.exe` yourself:
 3. Press **`Alt + Q`** (Default scan hotkey).
 4. The overlay instantly appears, highlighting any misspelled words.
 5. **Right-click** a red-underlined word to pick a correction, or select **Add to dictionary** to remember it forever.
-6. Click **Copy Text** (or press Enter) to instantly copy the corrected text back to your clipboard and close the overlay.
+6. Click **Copy Text** (or press Enter) to instantly paste the corrected text back into your chat.
 
 ### Hotkeys
 
-- **`Alt + Q`**: Scan the current AI agent chat input.
-- **`Esc`**: Hide the overlay without copying.
+- **`Alt + Q`**: Scan the current input field for typos.
+- **`Alt + W`**: Quick Fix (automatically apply the best suggestion for the first typo).
+- **`Esc`**: Hide the overlay without making any changes.
 
-*(Hotkeys can be customized in `settings.json`)*
+*(Hotkeys can be easily customized in `settings.json`)*
 
 ---
 
@@ -63,7 +64,7 @@ By default, the assistant looks for keywords like `antigravity`, `codex`, and `a
 
 **What if your AI CLI or Chat isn't recognized?**
 1. Open `settings.json`.
-2. Add a unique keyword representing your AI tool's window title into the `"target_keywords"` list, or add its `.exe` to `"dedicated_ai_process_names"`.
+2. Add a unique keyword representing your AI tool's window title to the `"target_keywords"` list, or add its executable name to `"dedicated_ai_process_names"`.
 3. Restart the app.
 
 ---
@@ -71,7 +72,5 @@ By default, the assistant looks for keywords like `antigravity`, `codex`, and `a
 ## 📝 Notes & Limitations
 
 - **Windows Only:** Relies heavily on native Windows UI Automation and `ctypes` hotkeys.
-- **Clipboard Usage:** Scans by doing a rapid select-all/copy/restore sequence. Rich text formatting might be converted to plain text during correction.
-- **Dictionary:** Custom words added via the right-click menu are saved in `user_words.txt`.
-uring correction.
-- **Dictionary:** Custom words added via the right-click menu are saved in `user_words.txt`.
+- **Clipboard Mechanism:** The app scans by doing a rapid select-all, copy, and restore sequence. Because of this, rich text formatting in the input box might be converted to plain text during correction.
+- **Dictionary Storage:** Custom words added via the right-click menu are saved locally in `user_words.txt`.

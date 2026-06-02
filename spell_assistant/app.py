@@ -14,10 +14,12 @@ from spell_assistant.clipboard import SelectionEditor
 from spell_assistant.engine import SpellEngine
 from spell_assistant.ui import MainWindow, TrayController
 from spell_assistant.hotkeys import NativeHotKeyListener
+from spell_assistant.utils import set_app_user_model_id
 
 
 class AIAgentChatSpellAssistantApp:
     def __init__(self) -> None:
+        set_app_user_model_id()
         self.config = AppConfig.load()
         # We don't strictly need WindowTargetGuard anymore since we removed the restriction, but leaving it initialized is fine
         self.target_guard = WindowTargetGuard(self.config)

@@ -33,6 +33,13 @@ def get_asset_path(filename: str) -> str:
         return os.path.join(sys._MEIPASS, 'assets', filename)
     return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'assets', filename)
 
+def set_app_user_model_id() -> None:
+    try:
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AIAgentChat.SpellAssistant")
+    except Exception as e:
+        import logging
+        logging.warning("Could not set AppUserModelID: %s", e)
+
 def configure_logging() -> None:
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
