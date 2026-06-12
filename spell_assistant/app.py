@@ -77,6 +77,7 @@ class AIAgentChatSpellAssistantApp:
                 
         if snapshot.setter:
             snapshot.setter(text, None, None)
+            self.engine.learn_from_text(text)
             logging.info("Quick fix applied instantly.")
 
     def _check_selection(self) -> None:
@@ -132,7 +133,8 @@ class AIAgentChatSpellAssistantApp:
 
     def _editor_copy(self, final_text: str) -> None:
         pyperclip.copy(final_text)
-        logging.info("Copied corrected text to clipboard")
+        self.engine.learn_from_text(final_text)
+        logging.info("Copied corrected text to clipboard and learned bigrams")
         
         # Auto-paste feature!
         if self.current_snapshot and self.current_snapshot.setter:

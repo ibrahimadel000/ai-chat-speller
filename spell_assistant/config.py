@@ -10,6 +10,7 @@ APP_DIR = Path(__file__).resolve().parent.parent
 SETTINGS_FILE = APP_DIR / "settings.json"
 LOG_FILE = APP_DIR / "spell_overlay.log"
 USER_WORDS_FILE = APP_DIR / "user_words.txt"
+USER_BIGRAMS_FILE = APP_DIR / "user_bigrams.txt"
 
 HOTKEY_SCAN = "<alt>+q"
 HOTKEY_QUICK_FIX = "<alt>+w"

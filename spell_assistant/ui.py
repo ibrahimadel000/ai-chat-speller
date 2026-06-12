@@ -33,7 +33,7 @@ class MainWindow(tk.Tk):
         self._recheck_after_id: str | None = None
         
         self.title("Spell Checker")
-        self.geometry("450x150")
+        self.geometry("450x250")
         self.attributes("-topmost", True)
         try:
             self.iconbitmap(get_asset_path("app_icon.ico"))
@@ -205,8 +205,8 @@ class MainWindow(tk.Tk):
 
     def _copy_and_close(self) -> None:
         final_text = self.text_widget.get("1.0", "end-1c")
-        self.on_copy(final_text)
         self.hide()
+        self.after(100, lambda: self.on_copy(final_text))
 
 class TrayController:
     def __init__(self, app: "AIAgentChatSpellAssistantApp") -> None:
