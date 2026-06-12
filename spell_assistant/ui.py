@@ -5,6 +5,7 @@ import threading
 import tkinter as tk
 from typing import Callable, TYPE_CHECKING
 
+import customtkinter as ctk
 import pystray
 from PIL import Image, ImageDraw
 
@@ -15,12 +16,13 @@ from spell_assistant.utils import get_asset_path
 if TYPE_CHECKING:
     from spell_assistant.app import AIAgentChatSpellAssistantApp
 
-class MainWindow(tk.Tk):
-    BG = "#1e1e1e"
-    TEXT = "#f2f4f8"
-    ACCENT = "#4f8cff"
+# Configure CustomTkinter for a modern look
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
+
+class MainWindow(ctk.CTk):
     BAD = "#ff5c7a"
-    BORDER = "#2c2c2c"
+    ACCENT = "#4f8cff"
 
     def __init__(self, on_apply: Callable[[str, int], None], on_copy: Callable[[str], None], on_add_word: Callable[[str], None], on_text_changed: Callable[[str], list[Misspelling]]) -> None:
         super().__init__()
@@ -32,56 +34,69 @@ class MainWindow(tk.Tk):
         self.raw_text: str = ""
         self._recheck_after_id: str | None = None
         
-        self.title("Spell Checker")
-        self.geometry("450x250")
-        self.attributes("-topmost", True)
+        self.title("🪄 AI Spell Assistant")
+        
         try:
             self.iconbitmap(get_asset_path("app_icon.ico"))
         except Exception as e:
-            logging.warning("Could not load window icon: %s", e)
-        self.configure(bg=self.BORDER)
+            logging.warning("Could not set window icon: %s", e)
+
+        self.geometry("600x350")
+        self.attributes("-topmost", True)
         
-        # We don't want it to close completely if they hit X, just maybe hide? Or they can close it and Alt+Q brings it back.
+        # We don't want it to close completely if they hit X, just hide it.
         self.protocol("WM_DELETE_WINDOW", self.hide)
 
-        self.container = tk.Frame(self, bg=self.BG, padx=4, pady=4)
-        self.container.pack(fill="both", expand=True, padx=1, pady=1)
+        # Main layout container
+        self.container = ctk.CTkFrame(self, fg_color="transparent")
+        self.container.pack(fill="both", expand=True, padx=16, pady=16)
 
-        # A little header
-        header = tk.Frame(self.container, bg=self.BG)
-        header.pack(fill="x", pady=(0, 4))
-        tk.Label(header, text="Review & Apply Fixes", bg=self.BG, fg="#a8b0bd", font=("Segoe UI", 9)).pack(side="left")
-
-        self.text_widget = tk.Text(
+        # Text Area with built-in scrollbar
+        self.text_widget = ctk.CTkTextbox(
             self.container,
             wrap="word",
-            bg=self.BG,
-            fg=self.TEXT,
-            insertbackground=self.TEXT,
-            selectbackground=self.ACCENT,
-            relief="flat",
-            bd=0,
-            padx=8,
-            pady=8,
-            font=("Segoe UI", 11),
-            height=4
+            font=("Segoe UI", 14)
         )
-        self.text_widget.pack(fill="both", expand=True)
-        self.text_widget.tag_configure("typo", foreground=self.BAD, underline=True)
-        self.text_widget.bind("<Button-3>", self._on_text_click)
-        self.text_widget.bind("<KeyRelease>", self._on_key_release)
+        self.text_widget.pack(fill="both", expand=True, pady=(0, 16))
+        
+        # Configure the inner tk.Text tags and bindings
+        self.text_widget._textbox.tag_configure("typo", foreground=self.BAD, underline=True)
+        self.text_widget._textbox.bind("<Button-3>", self._on_text_click)
+        self.text_widget._textbox.bind("<KeyRelease>", self._on_key_release)
 
-        footer = tk.Frame(self.container, bg=self.BG)
-        footer.pack(fill="x", pady=(4, 0))
+        # Footer
+        footer = ctk.CTkFrame(self.container, fg_color="transparent")
+        footer.pack(fill="x", side="bottom")
+        
+        hint_label = ctk.CTkLabel(
+            footer, 
+            text="Right-click underlined words for fixes", 
+            text_color="gray60", 
+            font=("Segoe UI", 12, "italic")
+        )
+        hint_label.pack(side="left")
 
-        tk.Button(
-            footer, text="Apply & Close", command=self._copy_and_close,
-            bg=self.ACCENT, fg="#ffffff", activebackground="#6fa2ff", activeforeground="#ffffff",
-            relief="flat", bd=0, padx=12, pady=4, font=("Segoe UI", 9, "bold"), cursor="hand2"
-        ).pack(side="right")
+        self.apply_btn = ctk.CTkButton(
+            footer, 
+            text="Apply & Close", 
+            command=self._copy_and_close,
+            font=("Segoe UI", 12, "bold"),
+            fg_color=self.ACCENT,
+            hover_color="#6fa2ff",
+            cursor="hand2"
+        )
+        self.apply_btn.pack(side="right")
 
-        self.menu = tk.Menu(self, tearoff=0, bg="#2d2d2d", fg=self.TEXT, activebackground=self.ACCENT, activeforeground="#ffffff", relief="flat", bd=0)
+        # Context menu for spelling suggestions
+        self.menu = tk.Menu(
+            self, tearoff=0, bg="#2b2b2b", fg="#f2f4f8", 
+            activebackground=self.ACCENT, activeforeground="#ffffff", 
+            relief="flat", bd=0, font=("Segoe UI", 10)
+        )
         self.bind("<Escape>", lambda e: self.hide())
+        
+        # Center on screen on first load
+        self.eval('tk::PlaceWindow . center')
 
     def show_text(self, text: str, misspellings: list[Misspelling]) -> None:
         self.raw_text = text
@@ -109,17 +124,20 @@ class MainWindow(tk.Tk):
             end_pos = self.text_widget.index("end-1c")
             
             tag_name = f"typo_{i}"
-            self.text_widget.tag_add("typo", start_pos, end_pos)
-            self.text_widget.tag_add(tag_name, start_pos, end_pos)
+            self.text_widget._textbox.tag_add("typo", start_pos, end_pos)
+            self.text_widget._textbox.tag_add(tag_name, start_pos, end_pos)
             
             last_idx = m.end
             
         self.text_widget.insert("end", text[last_idx:])
 
     def _on_text_click(self, event: tk.Event) -> None:
-        index = self.text_widget.index(f"@{event.x},{event.y}")
-        tags = self.text_widget.tag_names(index)
-        
+        try:
+            index = self.text_widget._textbox.index(f"@{event.x},{event.y}")
+            tags = self.text_widget._textbox.tag_names(index)
+        except Exception:
+            return
+            
         for tag in tags:
             if tag.startswith("typo_"):
                 typo_idx = int(tag.split("_")[1])
@@ -127,11 +145,11 @@ class MainWindow(tk.Tk):
                 self._show_suggestions(event.x_root, event.y_root, misspelling, typo_idx, tag)
                 return
 
-        # If we clicked on normal text, show a standard context menu
+        # Normal text context menu
         self.menu.delete(0, "end")
-        self.menu.add_command(label="Copy", command=lambda: self.text_widget.event_generate("<<Copy>>"))
-        self.menu.add_command(label="Paste", command=lambda: self.text_widget.event_generate("<<Paste>>"))
-        self.menu.add_command(label="Select All", command=lambda: self.text_widget.tag_add("sel", "1.0", "end"))
+        self.menu.add_command(label="Copy", command=lambda: self.text_widget._textbox.event_generate("<<Copy>>"))
+        self.menu.add_command(label="Paste", command=lambda: self.text_widget._textbox.event_generate("<<Paste>>"))
+        self.menu.add_command(label="Select All", command=lambda: self.text_widget._textbox.tag_add("sel", "1.0", "end"))
         self.menu.tk_popup(event.x_root, event.y_root)
 
     def _show_suggestions(self, x: int, y: int, misspelling: Misspelling, typo_idx: int, tag_name: str) -> None:
@@ -164,21 +182,19 @@ class MainWindow(tk.Tk):
         misspellings = self.on_text_changed(text)
         self.current_misspellings = misspellings
         
-        # Remove all existing tags
-        for tag in self.text_widget.tag_names():
+        for tag in self.text_widget._textbox.tag_names():
             if tag == "typo" or tag.startswith("typo_"):
-                self.text_widget.tag_remove(tag, "1.0", "end")
+                self.text_widget._textbox.tag_remove(tag, "1.0", "end")
                 
-        # Re-apply tags
         for i, m in enumerate(misspellings):
-            start_idx = self.text_widget.index(f"1.0 + {m.start} chars")
-            end_idx = self.text_widget.index(f"1.0 + {m.end} chars")
+            start_idx = self.text_widget._textbox.index(f"1.0 + {m.start} chars")
+            end_idx = self.text_widget._textbox.index(f"1.0 + {m.end} chars")
             tag_name = f"typo_{i}"
-            self.text_widget.tag_add("typo", start_idx, end_idx)
-            self.text_widget.tag_add(tag_name, start_idx, end_idx)
+            self.text_widget._textbox.tag_add("typo", start_idx, end_idx)
+            self.text_widget._textbox.tag_add(tag_name, start_idx, end_idx)
 
     def _apply_suggestion_to_editor(self, suggestion: str, typo_idx: int, tag_name: str) -> None:
-        ranges = self.text_widget.tag_ranges(tag_name)
+        ranges = self.text_widget._textbox.tag_ranges(tag_name)
         if not ranges:
             return
         
@@ -198,10 +214,10 @@ class MainWindow(tk.Tk):
         self._recheck_text(self.text_widget.get("1.0", "end-1c"))
         
     def _ignore_typo(self, tag_name: str) -> None:
-        ranges = self.text_widget.tag_ranges(tag_name)
+        ranges = self.text_widget._textbox.tag_ranges(tag_name)
         if ranges:
-            self.text_widget.tag_remove("typo", ranges[0], ranges[1])
-            self.text_widget.tag_remove(tag_name, ranges[0], ranges[1])
+            self.text_widget._textbox.tag_remove("typo", ranges[0], ranges[1])
+            self.text_widget._textbox.tag_remove(tag_name, ranges[0], ranges[1])
 
     def _copy_and_close(self) -> None:
         final_text = self.text_widget.get("1.0", "end-1c")
